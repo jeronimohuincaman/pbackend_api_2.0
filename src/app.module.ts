@@ -8,10 +8,12 @@ import { CategoriasModule } from './modules/categorias/categorias.module';
 import { MediosDePagoModule } from './modules/medios_de_pago/medios_de_pago.module';
 import { OrigenModule } from './modules/origen/origen.module';
 import { FondosModule } from './modules/fondos/fondos.module';
+import { PrismaModule } from './prisma/prisma.module';
+import { PrismaService } from './prisma/prisma.service';
 
 @Module({
-  imports: [UsuariosModule, MovimientosModule, PagosModule, CategoriasModule, MediosDePagoModule, OrigenModule, FondosModule],
+  imports: [UsuariosModule, MovimientosModule, PagosModule, CategoriasModule, MediosDePagoModule, OrigenModule, FondosModule, PrismaModule],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, PrismaService],
 })
 export class AppModule { }

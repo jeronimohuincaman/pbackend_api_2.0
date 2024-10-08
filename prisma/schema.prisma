@@ -1,0 +1,100 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model categorias {
+  idcategoria Int           @id @default(autoincrement())
+  descripcion String        @db.VarChar(255)
+  createdAt   DateTime      @db.DateTime(0)
+  updatedAt   DateTime      @db.DateTime(0)
+  movimientos movimientos[]
+  pagos       pagos[]
+}
+
+model fondos {
+  idfondo                 Int      @id @default(autoincrement())
+  origen                  Int
+  moneda                  Int
+  monto_moneda_base       Float    @db.Float
+  monto_moneda_referencia Float    @db.Float
+  fecha                   DateTime @db.DateTime(0)
+  createdAt               DateTime @db.DateTime(0)
+  updatedAt               DateTime @db.DateTime(0)
+}
+
+model medios_de_pago {
+  idmediopago Int           @id @default(autoincrement())
+  descripcion String        @db.VarChar(255)
+  createdAt   DateTime      @db.DateTime(0)
+  updatedAt   DateTime      @db.DateTime(0)
+  movimientos movimientos[]
+  pagos       pagos[]
+}
+
+model movimientos {
+  idmovimiento   Int            @id @default(autoincrement())
+  fecha_hora     DateTime       @db.DateTime(0)
+  descripcion    String         @db.VarChar(255)
+  idtipo         Int
+  idcategoria    Int
+  idusuario      Int
+  idmediopago    Int
+  monto          Float          @db.Float
+  idpago         Int?
+  createdAt      DateTime       @db.DateTime(0)
+  updatedAt      DateTime       @db.DateTime(0)
+  categorias     categorias     @relation(fields: [idcategoria], references: [idcategoria], onDelete: NoAction, onUpdate: NoAction, map: "movimientos_ibfk_1")
+  usuarios       usuarios       @relation(fields: [idusuario], references: [idusuario], onDelete: NoAction, onUpdate: NoAction, map: "movimientos_ibfk_2")
+  medios_de_pago medios_de_pago @relation(fields: [idmediopago], references: [idmediopago], onDelete: NoAction, onUpdate: NoAction, map: "movimientos_ibfk_3")
+  pagos          pagos?         @relation(fields: [idpago], references: [idpago], onDelete: NoAction, onUpdate: NoAction, map: "movimientos_ibfk_4")
+
+  @@index([idcategoria], map: "idcategoria")
+  @@index([idmediopago], map: "idmediopago")
+  @@index([idpago], map: "idpago")
+  @@index([idusuario], map: "idusuario")
+}
+
+model origenes {
+  idorigen    Int      @id @default(autoincrement())
+  descripcion String   @db.VarChar(255)
+  createdAt   DateTime @db.DateTime(0)
+  updatedAt   DateTime @db.DateTime(0)
+}
+
+model pagos {
+  idpago         Int            @id @default(autoincrement())
+  idusuario      Int
+  descripcion    String         @db.VarChar(255)
+  monto          Decimal        @db.Decimal(10, 2)
+  idmediopago    Int
+  idcategoria    Int
+  adjunto        String?        @db.VarChar(255)
+  fecha_hora     DateTime       @db.DateTime(0)
+  createdAt      DateTime       @db.DateTime(0)
+  updatedAt      DateTime       @db.DateTime(0)
+  movimientos    movimientos[]
+  usuarios       usuarios       @relation(fields: [idusuario], references: [idusuario], onDelete: NoAction, onUpdate: NoAction, map: "pagos_ibfk_1")
+  medios_de_pago medios_de_pago @relation(fields: [idmediopago], references: [idmediopago], onDelete: NoAction, onUpdate: NoAction, map: "pagos_ibfk_2")
+  categorias     categorias     @relation(fields: [idcategoria], references: [idcategoria], onDelete: NoAction, onUpdate: NoAction, map: "pagos_ibfk_3")
+
+  @@index([idcategoria], map: "idcategoria")
+  @@index([idmediopago], map: "idmediopago")
+  @@index([idusuario], map: "idusuario")
+}
+
+model usuarios {
+  idusuario   Int           @id @default(autoincrement())
+  user        String        @unique(map: "user") @db.VarChar(255)
+  pass        String        @db.VarChar(255)
+  nombre      String        @db.VarChar(255)
+  apellido    String        @db.VarChar(255)
+  createdAt   DateTime      @db.DateTime(0)
+  updatedAt   DateTime      @db.DateTime(0)
+  movimientos movimientos[]
+  pagos       pagos[]
+}
