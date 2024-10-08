@@ -5,7 +5,7 @@ import { UpdateMovimientoDto } from './dto/update-movimiento.dto';
 
 @Controller('movimientos')
 export class MovimientosController {
-  constructor(private readonly movimientosService: MovimientosService) {}
+  constructor(private readonly movimientosService: MovimientosService) { }
 
   @Post()
   create(@Body() createMovimientoDto: CreateMovimientoDto) {
